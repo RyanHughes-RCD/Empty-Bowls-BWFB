@@ -34,13 +34,15 @@ export function createApp() {
           styleSrc: ["'self'", "'unsafe-inline'"],
           scriptSrc: ["'self'"],
           connectSrc: ["'self'"],
-          frameAncestors: ["'self'"],
+          frameAncestors: ["'self'", ...config.embedAllowedOrigins],
           formAction: ["'self'"],
           objectSrc: ["'none'"],
           upgradeInsecureRequests: config.isProduction ? [] : null,
         },
       },
       crossOriginEmbedderPolicy: false,
+      // frame-ancestors (above) controls embedding; the legacy header would block all iframes.
+      xFrameOptions: config.embedAllowedOrigins.length ? false : { action: 'sameorigin' },
     }),
   );
   app.use(express.json({ limit: '200kb' }));

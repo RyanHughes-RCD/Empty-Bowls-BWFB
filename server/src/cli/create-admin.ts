@@ -9,10 +9,10 @@
  */
 import readline from 'node:readline';
 import { Writable } from 'node:stream';
-import { hashPassword, passwordProblems } from '../src/auth/password.js';
-import { config } from '../src/config.js';
-import { migrate } from '../src/db/migrate.js';
-import { closePools, pool } from '../src/db/pool.js';
+import { hashPassword, passwordProblems } from '../auth/password.js';
+import { config } from '../config.js';
+import { migrate } from '../db/migrate.js';
+import { closePools, pool } from '../db/pool.js';
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -66,8 +66,9 @@ async function main() {
     `INSERT INTO users (name, email, role, password_hash) VALUES ($1, $2, 'super_admin', $3) RETURNING id`,
     [name, email, await hashPassword(password)],
   );
-  await pool.query(`INSERT INTO audit_log (user_id, action, record_type, record_id, summary) VALUES ($1, 'user.create', 'user', $1, 'Super Admin created from command line')`, [
+  await pool.query(`INSERT INTO audit_log (user_id, action, record_type, record_id, summary) VALUES ($1, 'user.create', 'user', $2, 'Super Admin created from command line')`, [
     rows[0].id,
+    String(rows[0].id),
   ]);
   console.log(`Super Admin ${email} created (user #${rows[0].id}). You can now sign in at ${config.appBaseUrl}/login`);
 }

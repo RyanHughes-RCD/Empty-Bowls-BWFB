@@ -8,8 +8,8 @@
     "build": "tsc -p tsconfig.json && node scripts/copy-migrations.mjs",
     "start": "node dist/index.js",
     "migrate": "tsx src/db/migrate-cli.ts",
-    "create-admin": "tsx scripts/create-admin.ts",
-    "setup-db-roles": "tsx scripts/setup-db-roles.ts",
+    "create-admin": "tsx src/cli/create-admin.ts",
+    "setup-db-roles": "tsx src/cli/setup-db-roles.ts",
     "seed-demo": "tsx scripts/seed-demo.ts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"

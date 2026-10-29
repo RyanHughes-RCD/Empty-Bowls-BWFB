@@ -45,6 +45,11 @@ export const config = {
   // Minimum seconds between loading the form and submitting it (bot check).
   minFormFillSeconds: Number(process.env.MIN_FORM_FILL_SECONDS ?? (nodeEnv === 'test' ? 0 : 3)),
   serveClient: process.env.SERVE_CLIENT !== 'false',
+  // Websites allowed to embed the public form/gallery in an <iframe>, e.g. "https://www.mycharity.ca"
+  embedAllowedOrigins: (process.env.EMBED_ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => /^https?:\/\/[^\s/]+$/.test(s)),
 };
 
 export function smtpConfigured(): boolean {

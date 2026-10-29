@@ -40,7 +40,7 @@ const readLimiter = rateLimit({ windowMs: 60 * 1000, limit: config.isTest ? 1000
 publicRouter.use(readLimiter);
 
 publicRouter.get('/settings', async (_req, res) => {
-  res.set('Cache-Control', 'public, max-age=60');
+  res.set('Cache-Control', 'no-cache');
   res.json(await getPublicSettings());
 });
 
@@ -184,7 +184,8 @@ publicRouter.get('/gallery', async (req, res) => {
      LIMIT $${params.length - 1} OFFSET $${params.length}`,
     params,
   );
-  res.set('Cache-Control', 'public, max-age=30');
+  // Not cached, so publishing / unpublishing takes effect immediately.
+  res.set('Cache-Control', 'no-cache');
   res.json({ summary, byCategory, page: f.page, pageSize: f.page_size, donations: rows });
 });
 
@@ -193,7 +194,7 @@ publicRouter.get('/media/:id', async (req, res) => {
   const m = (await publicPool.query('SELECT storage_key, mime_type FROM public_gallery_media WHERE id = $1', [req.params.id])).rows[0];
   if (!m) throw notFound('Image not found.');
   res.set('Content-Type', m.mime_type);
-  res.set('Cache-Control', 'public, max-age=300');
+  res.set('Cache-Control', 'no-cache');
   res.set('X-Content-Type-Options', 'nosniff');
   res.sendFile(storagePath(m.storage_key));
 });
